@@ -25,6 +25,11 @@ enum editingState {
     DecimalEditing
 };
 
+- (void)setSelectedEditingState:(NSUInteger)selectedEditingState
+{
+    _selectedEditingState = selectedEditingState;
+    [self typeChanged];
+}
 
 - (void)typeChanged
 {
@@ -98,10 +103,12 @@ enum editingState {
 
 #pragma mark - editings
 
-- (void) binaryEditing{
-    if(self.binaryInput.text.length == 0){
-        self.hexInput.text = @"0";
+- (void)binaryEditing{
+    self.selectedEditingState = BinaryEditing;
+    if(self.binaryInput.text.length == 0 || [self.binaryInput.text isEqualToString:@"0"]){
+        self.binaryInput.text = @"";
         self.decimalInput.text = @"0";
+        self.hexInput.text = @"0";
     }else{
         Conversion *convert = [[Conversion alloc] initWithBinary:[self.binaryInput.text doubleValue] andWithDecimal:[[self.decimalInput text] intValue] andWithHex:[self.hexInput text]];
         
@@ -111,14 +118,14 @@ enum editingState {
         self.hexInput.text = [NSString stringWithFormat:@"%.0x",intergerValue];
         self.hexInput.text = [self.hexInput.text uppercaseString];
     }
-    
-    
 }
-- (void) hexEditing{
-    
-    if(self.hexInput.text.length == 0){
+
+- (void)hexEditing{
+    self.selectedEditingState = HexEditing;
+    if(self.hexInput.text.length == 0 || [self.hexInput.text isEqualToString:@"0"]){
         self.binaryInput.text = @"0";
         self.decimalInput.text = @"0";
+        self.hexInput.text = @"";
     }else{
         Conversion *convert = [[Conversion alloc] initWithBinary:[self.binaryInput.text doubleValue] andWithDecimal:[[self.decimalInput text] intValue] andWithHex:[self.hexInput text]];
         
@@ -130,19 +137,19 @@ enum editingState {
     }
 }
 
-- (void) decimalEditing{
-    if(self.decimalInput.text.length == 0){
+- (void)decimalEditing{
+    self.selectedEditingState = DecimalEditing;
+    if(self.decimalInput.text.length == 0 || [self.decimalInput.text isEqualToString:@"0"]){
         self.binaryInput.text = @"0";
+        self.decimalInput.text = @"";
         self.hexInput.text = @"0";
     }else{
         Conversion *convert = [[Conversion alloc] initWithBinary:[self.binaryInput.text doubleValue] andWithDecimal:[[self.decimalInput text] intValue] andWithHex:[self.hexInput text]];
         
         self.binaryInput.text = [NSString stringWithFormat:@"%d",[convert decimalToBinary]];
         
-        self.hexInput.text = [NSString stringWithFormat:@"%.0x",[[self.decimalInput text] intValue]];
-        self.hexInput.text = [self.hexInput.text uppercaseString];
+        self.hexInput.text = [[NSString stringWithFormat:@"%.0x",[[self.decimalInput text] intValue]] uppercaseString];
     }
-    
 }
 
 
@@ -162,6 +169,11 @@ enum editingState {
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    //setup editing touches
+    [self.binaryInput addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(binaryEditing)]];
+    [self.hexInput addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hexEditing)]];
+    [self.decimalInput addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(decimalEditing)]];
     
     //sets the initial state
     [self binaryEditing];
