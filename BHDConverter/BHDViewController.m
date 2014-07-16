@@ -110,13 +110,9 @@ enum editingState {
         self.decimalInput.text = @"0";
         self.hexInput.text = @"0";
     }else{
-        Conversion *convert = [[Conversion alloc] initWithBinary:[self.binaryInput.text doubleValue] andWithDecimal:[[self.decimalInput text] intValue] andWithHex:[self.hexInput text]];
         
-        int intergerValue = [convert binaryToDecimal];
-        
-        self.decimalInput.text = [NSString stringWithFormat:@"%.0f",[convert binaryToDecimal]];
-        self.hexInput.text = [NSString stringWithFormat:@"%.0x",intergerValue];
-        self.hexInput.text = [self.hexInput.text uppercaseString];
+        self.decimalInput.text = [Conversion decimalFromBinary:self.binaryInput.text];
+        self.hexInput.text = [Conversion hexFromBinary:self.binaryInput.text];
     }
 }
 
@@ -127,13 +123,9 @@ enum editingState {
         self.decimalInput.text = @"0";
         self.hexInput.text = @"";
     }else{
-        Conversion *convert = [[Conversion alloc] initWithBinary:[self.binaryInput.text doubleValue] andWithDecimal:[[self.decimalInput text] intValue] andWithHex:[self.hexInput text]];
-        
-        
-        self.decimalInput.text = [NSString stringWithFormat:@"%u",[convert hextoDecimal]];
-        convert = [[Conversion alloc] initWithBinary:[self.binaryInput.text doubleValue] andWithDecimal:[[self.decimalInput text] intValue] andWithHex:[self.hexInput text]];
-        
-        self.binaryInput.text = [NSString stringWithFormat:@"%d",[convert decimalToBinary]];
+
+        self.decimalInput.text = [Conversion decimalFromHex:self.hexInput.text];
+        self.binaryInput.text = [Conversion binaryFromHex:self.hexInput.text];
     }
 }
 
@@ -144,23 +136,12 @@ enum editingState {
         self.decimalInput.text = @"";
         self.hexInput.text = @"0";
     }else{
-        Conversion *convert = [[Conversion alloc] initWithBinary:[self.binaryInput.text doubleValue] andWithDecimal:[[self.decimalInput text] intValue] andWithHex:[self.hexInput text]];
         
-        self.binaryInput.text = [NSString stringWithFormat:@"%d",[convert decimalToBinary]];
-        
-        self.hexInput.text = [[NSString stringWithFormat:@"%.0x",[[self.decimalInput text] intValue]] uppercaseString];
+        self.binaryInput.text = [Conversion binaryFromDecimal:self.decimalInput.text];
+        self.hexInput.text = [Conversion hexFromDecimal:self.hexInput.text];
     }
 }
 
-
-
-- (void)didReceiveMemoryWarning
-{
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc that aren't in use.
-}
 
 #pragma mark - View lifecycle
 
@@ -178,14 +159,6 @@ enum editingState {
     //sets the initial state
     [self binaryEditing];
     
-}
-
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
 }
 
 

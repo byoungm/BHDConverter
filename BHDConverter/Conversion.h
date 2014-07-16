@@ -8,18 +8,15 @@
 
 #import <Foundation/Foundation.h>
 
-@interface Conversion : NSObject{
-    NSString *     hexNumber;
-    double         binaryNumber;
-    double         decimalNumber;
-    
-}
-@property (nonatomic, retain) NSString * hexNumber;
+@interface Conversion : NSObject
 
-- (id) initWithBinary: (double) aBinaryNumber andWithDecimal: (int) aDecimalNumber andWithHex: (NSString*) aHexNumber;
++ (NSString *)hexFromDecimal:(NSString *)decimal;
++ (NSString *)hexFromBinary:(NSString *)binary;
 
-- (int)    hextoDecimal;
-- (double) binaryToDecimal;
-- (int) decimalToBinary;
++ (NSString *)binaryFromDecimal:(NSString *)decimal;
++ (NSString *)binaryFromHex:(NSString *)hex;
+
++ (NSString *)decimalFromHex:(NSString *)hex;
++ (NSString *)decimalFromBinary:(NSString *)binary;
 
 @end
