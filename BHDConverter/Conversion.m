@@ -14,6 +14,7 @@
  {
      if (!decimal || [decimal isEqualToString:@""]) return decimal;
      
+     NSString * answerString;
      char * answer_c_str = malloc([decimal length]);
      long long decimal_num = [decimal longLongValue];
      long ans_cnt = 0;
@@ -50,8 +51,9 @@
      }
      answer_c_str[ans_cnt++]='\0';
      reverse_c_str(answer_c_str);
-     
-     return [NSString stringWithCString:answer_c_str encoding:NSASCIIStringEncoding];
+     answerString = [NSString stringWithCString:answer_c_str encoding:NSASCIIStringEncoding];
+     free(answer_c_str);
+     return answerString;
  }
 
 
@@ -60,6 +62,7 @@
 {
     if (!binary || [binary isEqualToString:@""]) return binary;
     
+    NSString *answerString;
     const char * binary_c_str = [binary cStringUsingEncoding:NSASCIIStringEncoding];
     long sub_cnt = 0;
     long bin_cnt = strlen(binary_c_str);
@@ -104,7 +107,9 @@
 	//free memory
 	free(substr);
     
-    return [NSString stringWithCString:answer_c_str encoding:NSASCIIStringEncoding];
+    answerString = [NSString stringWithCString:answer_c_str encoding:NSASCIIStringEncoding];
+    free(answer_c_str);
+    return answerString;
 }
 
 
@@ -112,6 +117,7 @@
 {
     if (!decimal || [decimal isEqualToString:@""] || [decimal isEqualToString:@"0"]) return decimal;
     
+    NSString *answerString;
     long long decimal_num = decimal.longLongValue;
     long double nbits = log( decimal_num * 1.0 ) / log( 2.0 );  //number of bits based on 2^n = decimal
     long ans_cnt = ( long )( floorl( nbits ) + 2 );   //+1 for extra bit after floor, +1 for null char.
@@ -126,7 +132,9 @@
 		answer_c_str[--ans_cnt] = remainder ? '1' : '0';
 	}
     
-    return [NSString stringWithCString:answer_c_str encoding:NSASCIIStringEncoding];
+    answerString = [NSString stringWithCString:answer_c_str encoding:NSASCIIStringEncoding];
+    free(answer_c_str);
+    return answerString;
 }
 
 
@@ -134,7 +142,7 @@
 {
     if (!hex || [hex isEqualToString:@""]) return hex;
     
-    NSMutableString *finalAnswer;
+    NSMutableString *answerString;
     const char * hex_c_str = [hex cStringUsingEncoding:NSASCIIStringEncoding];
     char * sub_str = "0000";
 	char * answer_c_str = malloc(strlen(hex_c_str) * 4 + 1); //+1 for null char
@@ -175,13 +183,13 @@
     answer_c_str[ans_cnt] = '\0';
     
     //remove possible 3 leading zeros.  If 0 delete first character
-    finalAnswer = [NSMutableString stringWithCString:answer_c_str encoding:NSASCIIStringEncoding];
-    while ([finalAnswer length] > 1) {
-        if ( [finalAnswer characterAtIndex:0] == '0' ) [finalAnswer deleteCharactersInRange:NSMakeRange(0, 1)];
+    answerString = [NSMutableString stringWithCString:answer_c_str encoding:NSASCIIStringEncoding];
+    while ([answerString length] > 1) {
+        if ( [answerString characterAtIndex:0] == '0' ) [answerString deleteCharactersInRange:NSMakeRange(0, 1)];
         else break;
     }
-    
-    return finalAnswer;
+    free(answer_c_str);
+    return answerString;
 }
 
 
