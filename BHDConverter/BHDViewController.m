@@ -62,6 +62,7 @@ enum editingState {
                         b.alpha = 1; b.enabled = YES;
                     }
                     break;
+                default: NSLog(@"Unrecongided state change to editing state: %d",self.selectedEditingState);
             }
         }
     }
@@ -139,7 +140,7 @@ enum editingState {
     }else{
         
         self.binaryInput.text = [Conversion binaryFromDecimal:self.decimalInput.text];
-        self.hexInput.text = [Conversion hexFromDecimal:self.hexInput.text];
+        self.hexInput.text = [Conversion hexFromDecimal:self.decimalInput.text];
     }
 }
 

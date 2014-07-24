@@ -12,13 +12,15 @@
 
  + (NSString *)hexFromDecimal:(NSString *)decimal
  {
+     if (!decimal || [decimal isEqualToString:@""]) return decimal;
+     
      char * answer_c_str = malloc([decimal length]);
      long long decimal_num = [decimal longLongValue];
      long ans_cnt = 0;
      long rem = 0;
      
      
-     while (decimal_num > 0){
+     while (true){
          rem = decimal_num % 16;
          decimal_num /= 16;
          switch(rem){
@@ -44,6 +46,7 @@
                     answer_c_str[ans_cnt++] = rem + '0';
              break;
          }
+         if (decimal_num <= 0) break; //break from while loop
      }
      answer_c_str[ans_cnt++]='\0';
      reverse_c_str(answer_c_str);
@@ -55,6 +58,8 @@
 
 + (NSString *)hexFromBinary:(NSString *)binary
 {
+    if (!binary || [binary isEqualToString:@""]) return binary;
+    
     const char * binary_c_str = [binary cStringUsingEncoding:NSASCIIStringEncoding];
     long sub_cnt = 0;
     long bin_cnt = strlen(binary_c_str);
@@ -96,7 +101,6 @@
         }
         answer_c_str[--ans_cnt] = c;
     }
-    NSLog(@"%s",answer_c_str);
 	//free memory
 	free(substr);
     
@@ -106,6 +110,8 @@
 
 + (NSString *)binaryFromDecimal:(NSString *)decimal
 {
+    if (!decimal || [decimal isEqualToString:@""] || [decimal isEqualToString:@"0"]) return decimal;
+    
     long long decimal_num = decimal.longLongValue;
     long double nbits = log( decimal_num * 1.0 ) / log( 2.0 );  //number of bits based on 2^n = decimal
     long ans_cnt = ( long )( floorl( nbits ) + 2 );   //+1 for extra bit after floor, +1 for null char.
@@ -126,6 +132,8 @@
 
 + (NSString *)binaryFromHex:(NSString *)hex
 {
+    if (!hex || [hex isEqualToString:@""]) return hex;
+    
     NSMutableString *finalAnswer;
     const char * hex_c_str = [hex cStringUsingEncoding:NSASCIIStringEncoding];
     char * sub_str = "0000";
@@ -179,6 +187,8 @@
 
  + (NSString *)decimalFromHex:(NSString *)hex
  {
+     if (!hex || [hex isEqualToString:@""]) return hex;
+     
      const char * hex_c_str = [hex cStringUsingEncoding:NSASCIIStringEncoding];
      long hex_str_len = strlen(hex_c_str);
      long i = 0;
@@ -199,6 +209,8 @@
 
 + (NSString *)decimalFromBinary:(NSString *)binary
 {
+    if (!binary || [binary isEqualToString:@""]) return binary;
+    
     const char *binary_c_str = [binary cStringUsingEncoding:NSASCIIStringEncoding];
     long long count = [binary length] - 1;
     long long decimal = 0;
