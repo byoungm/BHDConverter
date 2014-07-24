@@ -10,7 +10,6 @@
 
 @interface BinaryLabel : UILabel
 
-- (void)setBinaryText:(NSString *)text;
-- (NSString *)binaryText;
+@property (nonatomic, strong) NSString * binaryText;
 
 @end

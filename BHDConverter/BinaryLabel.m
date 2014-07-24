@@ -19,15 +19,15 @@
     return self;
 }
 
-- (void)setBinaryText:(NSString *)text
+- (void)setBinaryText:(NSString *)binaryText
 {
     //addspaces for binaryInput's readibility
-    NSMutableString *binaryOut = [[text stringByReplacingOccurrencesOfString:@" " withString:@""] mutableCopy];
-    for (int i=binaryOut.length-4; i>0; i=i-4) {
+    NSMutableString *binaryOut = [binaryText mutableCopy];
+    
+    for (int i = binaryOut.length - 4; i > 0; i -= 4) {
         [binaryOut insertString:@" " atIndex:i];
     }
-    [self setText:[binaryOut copy]];
-    
+    self.text = binaryOut;
 }
 
 - (NSString *)binaryText

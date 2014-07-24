@@ -8,10 +8,13 @@
 
 #import "BHDViewController.h"
 #import "Conversion.h"
+#import "BinaryLabel.h"
+
+#define MAX_BINARY_LENGTH 20
 
 @interface BHDViewController ()
 @property (nonatomic, assign) NSUInteger selectedEditingState;
-@property (nonatomic, strong) IBOutlet UILabel *binaryInput;
+@property (nonatomic, strong) IBOutlet BinaryLabel *binaryInput;
 @property (nonatomic, strong) IBOutlet UILabel *hexInput;
 @property (nonatomic, strong) IBOutlet UILabel *decimalInput;
 @end
@@ -69,26 +72,28 @@ enum editingState {
 }
 
 - (IBAction)buttonPressed:(UIButton *)sender {
-    switch (self.selectedEditingState) {
-        case BinaryEditing:
-            self.binaryInput.text = [self.binaryInput.text stringByAppendingString:sender.titleLabel.text];
-            [self binaryEditing];
-            break;
-        case HexEditing:
-            self.hexInput.text = [self.hexInput.text stringByAppendingString:sender.titleLabel.text];
-            [self hexEditing];
-            break;
-        case DecimalEditing:
-            self.decimalInput.text = [self.decimalInput.text stringByAppendingString:sender.titleLabel.text];
-            [self decimalEditing];
-            break;
+    if ( ! [self maxStringLenghExceeded] ) {
+        switch (self.selectedEditingState) {
+            case BinaryEditing:
+                self.binaryInput.binaryText = [self.binaryInput.binaryText stringByAppendingString:sender.titleLabel.text];
+                [self binaryEditing];
+                break;
+            case HexEditing:
+                self.hexInput.text = [self.hexInput.text stringByAppendingString:sender.titleLabel.text];
+                [self hexEditing];
+                break;
+            case DecimalEditing:
+                self.decimalInput.text = [self.decimalInput.text stringByAppendingString:sender.titleLabel.text];
+                [self decimalEditing];
+                break;
+        }
     }
 }
 
 - (IBAction)deletePressed:(UIButton *)sender {
     switch (self.selectedEditingState) {
         case BinaryEditing:
-            if(self.binaryInput.text.length > 0) self.binaryInput.text = [self.binaryInput.text substringToIndex:self.binaryInput.text.length - 1];
+            if(self.binaryInput.binaryText.length > 0) self.binaryInput.binaryText = [self.binaryInput.binaryText substringToIndex:self.binaryInput.binaryText.length - 1];
             [self binaryEditing];
             break;
         case HexEditing:
@@ -107,39 +112,39 @@ enum editingState {
 
 - (void)binaryEditing{
     self.selectedEditingState = BinaryEditing;
-    if(self.binaryInput.text.length == 0 || [self.binaryInput.text isEqualToString:@"0"]){
-        self.binaryInput.text = @"";
+    if(self.binaryInput.binaryText.length == 0 || [self.binaryInput.binaryText isEqualToString:@"0"]){
+        self.binaryInput.binaryText = @"";
         self.decimalInput.text = @"0";
         self.hexInput.text = @"0";
     }else{
         
-        self.decimalInput.text = [Conversion decimalFromBinary:self.binaryInput.text];
-        self.hexInput.text = [Conversion hexFromBinary:self.binaryInput.text];
+        self.decimalInput.text = [Conversion decimalFromBinary:self.binaryInput.binaryText];
+        self.hexInput.text = [Conversion hexFromBinary:self.binaryInput.binaryText];
     }
 }
 
 - (void)hexEditing{
     self.selectedEditingState = HexEditing;
     if(self.hexInput.text.length == 0 || [self.hexInput.text isEqualToString:@"0"]){
-        self.binaryInput.text = @"0";
+        self.binaryInput.binaryText = @"0";
         self.decimalInput.text = @"0";
         self.hexInput.text = @"";
     }else{
 
         self.decimalInput.text = [Conversion decimalFromHex:self.hexInput.text];
-        self.binaryInput.text = [Conversion binaryFromHex:self.hexInput.text];
+        self.binaryInput.binaryText = [Conversion binaryFromHex:self.hexInput.text];
     }
 }
 
 - (void)decimalEditing{
     self.selectedEditingState = DecimalEditing;
     if(self.decimalInput.text.length == 0 || [self.decimalInput.text isEqualToString:@"0"]){
-        self.binaryInput.text = @"0";
+        self.binaryInput.binaryText = @"0";
         self.decimalInput.text = @"";
         self.hexInput.text = @"0";
     }else{
         
-        self.binaryInput.text = [Conversion binaryFromDecimal:self.decimalInput.text];
+        self.binaryInput.binaryText = [Conversion binaryFromDecimal:self.decimalInput.text];
         self.hexInput.text = [Conversion hexFromDecimal:self.decimalInput.text];
     }
 }
@@ -161,6 +166,20 @@ enum editingState {
     //sets the initial state
     [self binaryEditing];
     
+}
+
+#pragma mark - other
+
+- (BOOL)maxStringLenghExceeded
+{
+    BOOL stringLengthExceeded = TRUE;
+    if (self.binaryInput.binaryText.length < MAX_BINARY_LENGTH) {
+        stringLengthExceeded = FALSE;
+    }else{
+        stringLengthExceeded = TRUE;
+        [[[UIAlertView alloc] initWithTitle:@"MAX Length Exceeded" message:nil delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles: nil] show];
+    }
+    return stringLengthExceeded;
 }
 
 
