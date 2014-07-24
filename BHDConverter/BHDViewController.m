@@ -40,7 +40,8 @@ enum editingState {
                 case BinaryEditing:
                     if ([b.titleLabel.text isEqualToString:@"1"] |
                         [b.titleLabel.text isEqualToString:  @"0"] |
-                        [b.titleLabel.text isEqualToString:@"<-"]) {
+                        [b.titleLabel.text isEqualToString:@"<-"] |
+                        [b.titleLabel.text isEqualToString:@"DEL"] ) {
                         b.alpha = 1; b.enabled = YES;
                     }else {
                         b.alpha = 0.5; b.enabled = NO;
